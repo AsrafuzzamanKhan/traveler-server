@@ -129,5 +129,5 @@ app.get('/', (req, res) => {
 
 // listen port
 app.listen(port, () => {
-  console.log(' World Best Travel site ', port);
+  console.log('Best Travel site ', port);
 });
