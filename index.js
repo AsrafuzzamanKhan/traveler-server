@@ -124,10 +124,10 @@ run().catch(console.dir);
 
 // default route
 app.get('/', (req, res) => {
-  res.send('running traveler 2023');
+  res.send('New traveler 2023');
 });
 
 // listen port
 app.listen(port, () => {
-  console.log(' World Travelers ', port);
+  console.log(' World Best Travel site ', port);
 });
