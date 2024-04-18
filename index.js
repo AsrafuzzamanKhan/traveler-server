@@ -1,6 +1,6 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
-const ObjectId = require("mongodb").ObjectId;
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const ObjectId = require("mongodb");
 
 const cors = require("cors");
 require("dotenv").config();
@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.6kqiq.mongodb.net/?retryWrites=true&w=majority
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.6kqiq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -24,9 +25,29 @@ async function run() {
     client.connect();
     // await client.connect();
     const database = client.db("traveler");
+    const usersCollection = client.db("traveler").collection("users");
     const packagesCollection = database.collection("packages");
     const bookingCollection = database.collection("booking");
     const activitiesCollection = database.collection("activities");
+
+    // create users api
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email };
+      const exixtingUser = await usersCollection.findOne(query);
+      console.log("exixting user ", exixtingUser);
+      if (exixtingUser) {
+        return res.send({ message: "User All ready exist" });
+      }
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+    // get all users
+
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
 
     // GET all package
     app.get("/packages", async (req, res) => {
@@ -125,7 +146,7 @@ run().catch(console.dir);
 
 // default route
 app.get("/", (req, res) => {
-  res.send("New traveler 2023");
+  res.send("New traveler 2024");
 });
 
 // listen port
